@@ -1,0 +1,4 @@
+
+*.pyc
+config/session.txt
+test.py
