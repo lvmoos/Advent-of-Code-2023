@@ -20,10 +20,39 @@ def run_part1(input):
 part1 = run_part1(input_lst)
 print(f"{part1} is the answer to part 1.")
 
-# Part 2
+#%% Part 2
 def run_part2(input):
+    num_lst = ('1', '2', '3', '4', '5', '6', '7', '8', '9' )
+    str_lst = ('one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine')
+    str_lst_rev = [s[::-1] for s in str_lst]
+
+    rep_value = np.inf
     values = []
-    number_map = {'one':'1', 'two':'2', 'three':'3', 'four':'4', 'five':'5', 'six':'6', 'seven':'7', 'eight':'8', 'nine':'9' }
+    for line in input:
+        num_idx = [line.index(num) if num in line else rep_value for num in num_lst]
+        str_idx = [line.index(num) if num in line else rep_value for num in str_lst]
+
+        if min(num_idx)<min(str_idx):
+            d1 = np.argmin(num_idx) +1
+        else:
+            d1 = np.argmin(str_idx) +1
+
+        line_rev = line[::-1]
+        num_idx = [line_rev.index(num) if num in line_rev else rep_value for num in num_lst]
+        str_idx = [line_rev.index(num) if num in line_rev else rep_value for num in str_lst_rev]
+
+        if min(num_idx)<min(str_idx):
+            d2 = np.argmin(num_idx) + 1
+        else:
+            d2 = np.argmin(str_idx) + 1
+
+        values.append(int(str(d1) + str(d2)))
+
+    return sum(values)
 
 test_input = ['two1nine','eightwothree','abcone2threexyz','xtwone3four','4nineeightseven2','zoneight234','7pqrstsixteen']
 run_part2(test_input)
+
+# %% Part 2
+part2 = run_part2(input_lst)
+print(f"{part2} is the answer to part 2.")
