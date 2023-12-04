@@ -6,7 +6,8 @@ import utilities.helper_functions as utils
 input_lst, input_str = utils.aoc_input_fetch(day=3, year=2023)
 print(input_lst)
 
-input_test = ['467..114..',
+input_test = [
+'467..114..',
 '...*......',
 '..35..633.',
 '......#...',
@@ -32,27 +33,86 @@ symbols = [sym for sym in np.unique(list(input_str)) if sym not in ('0', '1', '2
        '3', '4', '5', '6', '7', '8', '9','.','\n')]
 
 # %% Part 1
-i = 0
-str_len = len(test_str)
-row_len = test_str.index('\n')
-n_rows = str_len/row_len
-while i<str_len:
-    char = test_str[i]
+def run_part1(input_str):
+    valid_numbers = []
+    i = 0
+    row_len = input_str.index('\n')
+    input_str = input_str.replace('\n', '')
+    str_len = len(input_str)
 
-    if char.isdigit():
-        num_len = 1
-        while test_str[i+num_len].isdigit():
-            num_len += 1
-        num = test_str[i:i+num_len]
-        row_prev = (i//row_len - 1) if i > row_len else 0
-        row_next = (i//row_len + 1) if i > row_len else 0
-        i_left = i - 1 if i > 0 else i
-        i_right = i + num_len if i + num_len < str_len else i
-        i_top_min = row_prev + i_left
-        i_top_max = row_prev + i_right
-        i_bot_min = row_next + i_left
-        i_bot_max = row_next + i_right
-        print(num)
-        print(i_left, i_right, i_top_min, i_top_max, i_bot_min, i_bot_max)
-        i += num_len
-    i+=1
+    # Run through flat string
+    while i < str_len:
+        char = input_str[i]
+
+        if char.isdigit():
+            # Scan whole number
+            num_len = 1
+            while input_str[i+num_len].isdigit():
+                num_len += 1
+            num = input_str[i:i+num_len]
+
+            i_left = i - 1
+            i_right = i + num_len
+            idx_left = [i_left] if i_left >= 0 else []
+            idx_right = [i_right] if i_right < str_len else []
+
+            indicies = idx_left \
+                + idx_right \
+                + [i for i in range(i_left - row_len, i_right - row_len + 1) if i >= 0] \
+                + [i for i in range(i_left + row_len, i_right + row_len + 1) if i < str_len]
+
+            boundaries = [input_str[i] for i in indicies]
+            # Check for symbols around number
+            for sym in symbols:
+                if sym in boundaries:
+                    valid_numbers.append(int(num))
+            i += num_len
+        i+=1
+    return sum(valid_numbers)
+
+run_part1(input_str=test_str)
+print("Part 1:", run_part1(input_str=input_str))
+
+#%% Part 2
+def run_part2(input_str):
+    gears = {} 
+    i = 0
+    row_len = input_str.index('\n')
+    input_str = input_str.replace('\n', '')
+    str_len = len(input_str)
+
+    while i < str_len:
+        char = input_str[i]
+
+        if char.isdigit():
+            # Scan whole number
+            num_len = 1
+            while input_str[i+num_len].isdigit():
+                num_len += 1
+            num = input_str[i:i+num_len]
+
+            i_left = i - 1
+            i_right = i + num_len
+            idx_left = [i_left] if i_left >= 0 else []
+            idx_right = [i_right] if i_right < str_len else []
+
+            indicies = idx_left \
+                + idx_right \
+                + [i for i in range(i_left - row_len, i_right - row_len + 1) if i >= 0] \
+                + [i for i in range(i_left + row_len, i_right + row_len + 1) if i < str_len]
+
+            # Check for symbols around number
+            for gear in [i for i in indicies if input_str[i] == '*']:
+                if gear in gears:
+                    gears[gear] += [int(num)]
+                else:
+                    gears[gear] = [int(num)]
+            i += num_len
+        i += 1
+
+    gear_ratios = sum([gear_values[0]*gear_values[1] for gear_values in gears.values() if len(gear_values)==2])
+    return gears,gear_ratios
+
+run_part2(input_str=test_str)
+gears,gear_ratios = run_part2(input_str=input_str)
+print("Part 2:", gear_ratios)
