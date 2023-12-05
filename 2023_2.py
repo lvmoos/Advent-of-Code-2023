@@ -53,10 +53,10 @@ def run_part1(input):
             games_success.append(game_num)
 
     return sum(games_success)
+
 input_test = parser(input_test)
 input_1 = parser(input_lst)
 print(f"Part 1:", run_part1(input_1))
-
 #%% Part 2
 # %% Part 1
 def run_part2(input):

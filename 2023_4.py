@@ -56,14 +56,14 @@ def run_through_hand(hand, orginal_hand):
 
     return won_cards
 
-original_hand = parser_part2(input_lst=input_test)
+original_hand = parser_part2(input_lst=input_lst)
 new_hand = [card for card in original_hand]
 hand_count = len(new_hand)
 while new_hand:
     new_hand = run_through_hand(hand=new_hand, orginal_hand=original_hand)
     hand_count += len(new_hand)
-    break
 
+print(f"Part 2:", hand_count)
 # %% Part 2 - Better implementation
 def check_hand(card, orginal_hand):
     won_cards = []
@@ -88,12 +88,15 @@ def assign_card_winnings(original_hand):
 
     return hand_winning_map
 
-original_hand = parser_part2(input_lst=input_test)
+
+original_hand = parser_part2(input_lst=input_lst)
 card_win_map = assign_card_winnings(original_hand)
 
 accumulated_cards = {card:1 for card in original_hand}
 starting_hand = {card:1 for card in original_hand}
-for card_played in starting_hand:
+for card_played in accumulated_cards:
     for card, win_count in card_win_map[card_played].items():
         accumulated_cards[card] += win_count*accumulated_cards[card_played]
 
+cards_gained = sum(accumulated_cards.values())
+print(f"Part 2:", cards_gained)
