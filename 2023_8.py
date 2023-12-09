@@ -91,6 +91,7 @@ step_count = 0
 at_endpoints = False
 cycles = {}
 completed_cycles = {}
+# Finde potential cycles in each stating path
 while len(completed_cycles)<len(start_nodes):
     for step in directions:
         next_nodes = [take_step(nodes, step, node) for node in current_nodes]
@@ -109,15 +110,16 @@ while len(completed_cycles)<len(start_nodes):
                     completed_cycles[start_node] = (end_node, step_count - prev_count)
             else:
                 cycles[start_node] = (end_node, step_count)
-    
+
+# Finde the lowest multiple of all paths
 check_factors = sorted([cycles[1] for cycles in completed_cycles.values()])
 n = check_factors[0]
 n_adder = n
-for idx, entry in enumerate(check_factors[:-2]):
+for idx in range(len(check_factors[:-1])):
     next_entry = check_factors[idx+1]
     while True:
         if n%next_entry == 0:
-            print(f'Least common multiple between {entry} and {next_entry}:', n)
+            print(f'Least common multiple between {check_factors[:idx+2]}:', n)
             n_adder = n
             break
         n += n_adder
